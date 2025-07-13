@@ -83,6 +83,7 @@ def plot_joints(data, dim, joints):
     plt.show()
 
 
+
 def plot_2d_pose(pose, figsize=(8, 8)):
     """
     Visualize a 2D skeleton.
@@ -111,21 +112,16 @@ def plot_2d_pose(pose, figsize=(8, 8)):
     plt.title('2D Pose Estimate', size=14)
     plt.show()
 
-    
+
+
+
+
 def plot_3d_pose(pose, elev=0, azim=0, figsize=(8, 8)):
-    """
-    Visualize a 3D skeleton.
-    :param pose: numpy array (3 x 17) with x, y, z coordinates with COCO keypoint format.
-    :param elev: Elevation angle in the z plane.
-    :param azim: Azimuth angle in the x, y plane.
-    :param figsize: Figure size.
-    :return: None
-    """
     pose = pose.flatten(order='F')
     vals = np.reshape(pose, (17, -1))
 
     fig = plt.figure(figsize=figsize)
-    ax = Axes3D(fig)
+    ax = fig.add_subplot(111, projection='3d')  # ✅ Modern way
     ax.view_init(elev, azim)
 
     limbs = [(0, 1), (1, 2), (2, 3), (0, 4), (4, 5), (5, 6), (0, 7), (7, 8), (8, 9), (9, 10), (8, 11), (11, 12),
@@ -133,12 +129,7 @@ def plot_3d_pose(pose, elev=0, azim=0, figsize=(8, 8)):
     left_right_limb = np.array([1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
     for i, limb in enumerate(limbs):
         x, y, z = [np.array([vals[limb[0], j], vals[limb[1], j]]) for j in range(3)]
-        if left_right_limb[i] == 0:
-            cc = 'blue'
-        elif left_right_limb[i] == 1:
-            cc = 'red'
-        else:
-            cc = 'black'
+        cc = 'red' if left_right_limb[i] else 'blue'
         ax.plot(x, y, z, marker='o', markersize=2, lw=1, c=cc)
 
     radius = 650
@@ -152,6 +143,70 @@ def plot_3d_pose(pose, elev=0, azim=0, figsize=(8, 8)):
     ax.set_zlabel('Y')
 
     white = (1.0, 1.0, 0.1, 0.0)
-    ax.w_xaxis.set_pane_color(white)
-    ax.w_yaxis.set_pane_color(white)
-    ax.w_zaxis.set_pane_color(white)
+    ax.xaxis.set_pane_color(white)
+    ax.yaxis.set_pane_color(white)
+    ax.zaxis.set_pane_color(white)
+
+    plt.title('3D Pose Estimate', size=14)
+    plt.show()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
+# def plot_3d_pose(pose, elev=0, azim=0, figsize=(8, 8)):
+#     """
+#     Visualize a 3D skeleton.
+#     :param pose: numpy array (3 x 17) with x, y, z coordinates with COCO keypoint format.
+#     :param elev: Elevation angle in the z plane.
+#     :param azim: Azimuth angle in the x, y plane.
+#     :param figsize: Figure size.
+#     :return: None
+#     """
+#     pose = pose.flatten(order='F')
+#     vals = np.reshape(pose, (17, -1))
+
+#     fig = plt.figure(figsize=figsize)
+#     ax = Axes3D(fig)
+#     ax.view_init(elev, azim)
+
+#     limbs = [(0, 1), (1, 2), (2, 3), (0, 4), (4, 5), (5, 6), (0, 7), (7, 8), (8, 9), (9, 10), (8, 11), (11, 12),
+#              (12, 13), (8, 14), (14, 15), (15, 16)]
+#     left_right_limb = np.array([1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1])
+#     for i, limb in enumerate(limbs):
+#         x, y, z = [np.array([vals[limb[0], j], vals[limb[1], j]]) for j in range(3)]
+#         if left_right_limb[i] == 0:
+#             cc = 'blue'
+#         elif left_right_limb[i] == 1:
+#             cc = 'red'
+#         else:
+#             cc = 'black'
+#         ax.plot(x, y, z, marker='o', markersize=2, lw=1, c=cc)
+
+#     radius = 650
+#     xroot, yroot, zroot = vals[0, 0], vals[0, 1], vals[0, 2]
+#     ax.set_xlim3d([-radius + xroot, radius + xroot])
+#     ax.set_zlim3d([-radius + zroot, radius + zroot])
+#     ax.set_ylim3d([-radius + yroot, radius + yroot])
+
+#     ax.set_xlabel('X')
+#     ax.set_ylabel('Z')
+#     ax.set_zlabel('Y')
+
+#     white = (1.0, 1.0, 0.1, 0.0)
+#     ax.w_xaxis.set_pane_color(white)
+#     ax.w_yaxis.set_pane_color(white)
+#     ax.w_zaxis.set_pane_color(white)
+
+
+
